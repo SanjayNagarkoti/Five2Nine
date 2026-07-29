@@ -1,17 +1,18 @@
 import { useState } from "react";
 import { Eye, EyeOff, Hammer, Search, ArrowRight, Check } from "lucide-react";
-import { registerUser } from "/Users/Anas malkani/OneDrive/Desktop/Five2Nine/frontend/src/service/authService";
+import { registerUser } from "../service/authService";
 
 export default function SignupPage() {
   const [role, setRole] = useState("freelancer"); // "freelancer" | "client"
   const [showPassword, setShowPassword] = useState(false);
-  const [form, setForm] = useState({ name: "", email: "", password: "" });
+  const [form, setForm] = useState({ name: "", email: "", password: "", confirmPassword: "" });
   const [submitted, setSubmitted] = useState(false);
+  const [emailError, setEmailError] = useState("");
 
   const isFreelancer = role === "freelancer";
   const accent = isFreelancer ? "#1F8A70" : "#C9762B";
   const accentSoft = isFreelancer ? "#E4F3EE" : "#FBEADC";
-
+  const passwordsMatch = form.confirmPassword === "" || form.password === form.confirmPassword;
   const passwordStrength = (() => {
     const p = form.password;
     if (!p) return 0;
@@ -25,33 +26,56 @@ export default function SignupPage() {
 
   const strengthLabel = ["Too short", "Weak", "Okay", "Good", "Strong"][passwordStrength];
 
-  const handleChange = (field) => (e) =>
-    setForm((f) => ({ ...f, [field]: e.target.value }));
+  const handleChange = (field) => (e) => {
 
-  const handleSubmit =async (e) => {
-    e.preventDefault();
+  if (field === "email") {
+    setEmailError("");
+  }
 
-    // Shape matches the Spring backend DTO: name, email, password, role
-    const signupDto = {
-      name: form.name,
-      email: form.email,
-      password: form.password,
-      role: role.toUpperCase(), // "FREELANCER" | "CLIENT"
-    };
+  setForm((f) => ({
+    ...f,
+    [field]: e.target.value,
+  }));
+};
 
-    console.log("Signup DTO:", signupDto);
-   try {
+ const handleSubmit = async (e) => {
+  e.preventDefault();
+  setEmailError("");
+
+  if (form.password !== form.confirmPassword) {
+    alert("Passwords do not match!");
+    return;
+  }
+
+  const signupDto = {
+    name: form.name,
+    email: form.email,
+    password: form.password,
+    role: role.toUpperCase(),
+  };
+
+  try {
+
     const response = await registerUser(signupDto);
 
     console.log(response);
 
     setSubmitted(true);
-} catch (error) {
-    console.error(error);
 
-    alert("Registration Failed");
 }
-  };
+catch (error) {
+
+    if (error.response) {
+        setEmailError(error.response.data);
+
+    } else {
+
+        console.log(error);
+
+    }
+
+}
+};
 
   return (
     <div className="min-h-screen w-full flex justify-center bg-[#E9E5DA]" style={{ fontFamily: "'Inter', sans-serif" }}>
@@ -255,20 +279,27 @@ export default function SignupPage() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-medium text-[#8288A8] uppercase tracking-wide mb-1.5">
-                    Email
-                  </label>
-                  <input
-                    type="email"
-                    required
-                    value={form.email}
-                    onChange={handleChange("email")}
-                    placeholder={isFreelancer ? "you@yourwork.com" : "you@company.com"}
-                    className="w-full rounded-lg border border-[#E7E5DD] bg-white px-3.5 py-2.5 text-[14.5px] text-[#1B2140] placeholder-[#B4B7C6] outline-none transition-colors focus:border-2"
-                    onFocus={(e) => (e.target.style.borderColor = accent)}
-                    onBlur={(e) => (e.target.style.borderColor = "#E7E5DD")}
-                  />
-                </div>
+  <label className="block text-xs font-medium text-[#8288A8] uppercase tracking-wide mb-1.5">
+    Email
+  </label>
+
+  <input
+    type="email"
+    required
+    value={form.email}
+    onChange={handleChange("email")}
+    placeholder={isFreelancer ? "you@yourwork.com" : "you@company.com"}
+    className={`w-full rounded-lg border bg-white px-3.5 py-2.5 text-[14.5px] text-[#1B2140] placeholder-[#B4B7C6] outline-none transition-colors ${
+      emailError ? "border-red-500" : "border-[#E7E5DD]"
+    }`}
+  />
+
+  {emailError && (
+    <p className="text-red-500 text-xs mt-1">
+      {emailError}
+    </p>
+  )}
+</div>
 
                 <div>
                   <label className="block text-xs font-medium text-[#8288A8] uppercase tracking-wide mb-1.5">
@@ -286,13 +317,12 @@ export default function SignupPage() {
                       onBlur={(e) => (e.target.style.borderColor = "#E7E5DD")}
                     />
                     <button
-                      type="button"
-                      onClick={() => setShowPassword((s) => !s)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-[#A3A79A] hover:text-[#6B7094]"
-                      aria-label={showPassword ? "Hide password" : "Show password"}
-                    >
-                      {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-                    </button>
+  type="button"
+  onClick={() => setShowPassword((s) => !s)}
+  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#A3A79A] hover:text-[#6B7094]"
+>
+  {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+</button>
                   </div>
 
                   {form.password && (
@@ -312,15 +342,42 @@ export default function SignupPage() {
                     </div>
                   )}
                 </div>
+                <div>
+  <label className="block text-xs font-medium text-[#8288A8] uppercase tracking-wide mb-1.5">
+    Confirm Password
+  </label>
+
+  <input
+    type={showPassword ? "text" : "password"}
+    required
+    value={form.confirmPassword}
+    onChange={handleChange("confirmPassword")}
+    placeholder="Re-enter your password"
+    className={`w-full rounded-lg border bg-white px-3.5 py-2.5 text-[14.5px] text-[#1B2140] placeholder-[#B4B7C6] outline-none transition-colors ${
+      !passwordsMatch ? "border-red-500" : "border-[#E7E5DD]"
+    }`}
+  />
+
+  {!passwordsMatch && (
+    <p className="text-red-500 text-xs mt-1">
+      Passwords do not match.
+    </p>
+  )}
+</div>
+                
 
                 <button
-                  type="submit"
-                  className="w-full mt-2 rounded-lg py-3 text-[14.5px] font-semibold text-white flex items-center justify-center gap-2 transition-all duration-200 hover:opacity-90"
-                  style={{ backgroundColor: accent }}
-                >
-                  {isFreelancer ? "Create freelancer account" : "Create hiring account"}
-                  <ArrowRight size={16} />
-                </button>
+  type="submit"
+  disabled={!passwordsMatch}
+  className="w-full mt-2 rounded-lg py-3 text-[14.5px] font-semibold text-white flex items-center justify-center gap-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+  style={{ backgroundColor: accent }}
+>
+  {isFreelancer
+    ? "Create freelancer account"
+    : "Create hiring account"}
+
+  <ArrowRight size={16} />
+</button>
               </form>
 
               <p className="text-[11.5px] text-[#A3A79A] mt-5 leading-relaxed">
