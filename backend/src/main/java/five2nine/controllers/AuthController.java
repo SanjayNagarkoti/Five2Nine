@@ -1,5 +1,7 @@
 package five2nine.controllers;
 
+import five2nine.dto.AuthResponse;
+import five2nine.dto.LoginRequest;
 import five2nine.dto.RegisterRequest;
 import five2nine.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,9 +20,16 @@ public class AuthController
     private AuthService authService;
 
     @PostMapping("/signup")
-    public ResponseEntity<String> signup(@RequestBody RegisterRequest dto)
-    {
-        String message= authService.registerNewUser(dto);
-        return ResponseEntity.ok(message);
+    public ResponseEntity<AuthResponse> signup(@RequestBody RegisterRequest dto) {
+
+        AuthResponse response = authService.registerNewUser(dto);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest dto){
+        AuthResponse auth = authService.login(dto);
+        return ResponseEntity.ok(auth);
     }
 }
