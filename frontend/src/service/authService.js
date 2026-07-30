@@ -15,3 +15,16 @@ export const registerUser = async (userData) => {
         throw error;
     }
 };
+export const authenticateUser = async (userData) => {
+    try {
+        const response = await axios.post(`${API_URL}/login`, userData, {
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};

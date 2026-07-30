@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Eye, EyeOff, Hammer, Search, ArrowRight, Check } from "lucide-react";
 import { registerUser } from "../service/authService";
-
+import { Link } from "react-router-dom";
 export default function SignupPage() {
   const [role, setRole] = useState("freelancer"); // "freelancer" | "client"
   const [showPassword, setShowPassword] = useState(false);
@@ -211,9 +211,12 @@ catch (error) {
               </h2>
               <p className="text-[#8288A8] text-sm mb-7">
                 Already have one?{" "}
-                <a href="#" className="text-[#1B2140] font-medium underline underline-offset-2 decoration-[#D8DAE8]">
-                  Sign in
-                </a>
+                <Link
+                  to="/login"
+                  className="text-[#1B2140] font-medium underline underline-offset-2 decoration-[#D8DAE8]"
+                >
+                  Login
+                </Link>
               </p>
 
               {/* Role selector */}
