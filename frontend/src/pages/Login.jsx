@@ -13,14 +13,13 @@ export default function Loginpage() {
   const accent = "#1F8A70";
 
   const handleChange = (field) => (e) => {
-
     setuserError("");
 
     setForm((f) => ({
-        ...f,
-        [field]: e.target.value,
+      ...f,
+      [field]: e.target.value,
     }));
-};
+  };
   const handleSubmit = async (e) => {
     e.preventDefault();
     const loginDto = {
@@ -65,7 +64,7 @@ export default function Loginpage() {
                 Don't have an account? {""}
                 <Link
                   to="/signup"
-                  className="text-[#1B2140] font-medium underline underline-offset-2 decoration-[#D8DAE8]"
+                  className="text-[#0000ff] font-medium underline underline-offset-2 decoration-[#D8DAE8]"
                 >
                   Sign up
                 </Link>
@@ -91,6 +90,7 @@ export default function Loginpage() {
                   <label className="block text-xs font-medium text-[#8288A8] uppercase tracking-wide mb-1.5">
                     Password
                   </label>
+
                   <div className="relative">
                     <input
                       type={showPassword ? "text" : "password"}
@@ -111,8 +111,16 @@ export default function Loginpage() {
                       {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                     </button>
                   </div>
-                </div>
 
+                  <div className="flex justify-end mt-2">
+                    <Link
+                      to="/forgot-password"
+                      className="text-sm text-[#6B7094] hover:text-[#1B2140] hover:underline"
+                    >
+                      Forgot Password?
+                    </Link>
+                  </div>
+                </div>
                 <button
                   type="submit"
                   className="w-full mt-2 rounded-lg py-3 text-[14.5px] font-semibold text-white flex items-center justify-center gap-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
@@ -123,8 +131,9 @@ export default function Loginpage() {
                 </button>
               </form>
               {userError && (
-              <p className="text-red-500 text-xs mt-1">{userError}</p>)
-              }</>
+                <p className="text-red-500 text-xs mt-1">{userError}</p>
+              )}
+            </>
           </div>
         </div>
       </div>

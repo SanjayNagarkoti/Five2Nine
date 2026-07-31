@@ -213,7 +213,7 @@ catch (error) {
                 Already have one?{" "}
                 <Link
                   to="/login"
-                  className="text-[#1B2140] font-medium underline underline-offset-2 decoration-[#D8DAE8]"
+                  className="text-[#0000ff] font-medium underline underline-offset-2 decoration-[#D8DAE8]"
                 >
                   Login
                 </Link>

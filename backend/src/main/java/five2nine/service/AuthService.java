@@ -7,32 +7,43 @@ import five2nine.entity.User;
 import five2nine.exception.EmailAlreadyExistsException;
 import five2nine.exception.InvalidCredentialsException;
 import five2nine.repository.UserRepository;
-import org.hibernate.boot.model.source.spi.SingularAttributeSourceToOne;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
-
 public class AuthService {
+
     @Autowired
     private UserRepository repo;
+
     @Autowired
     private ModelMapper modelMapper;
+
     @Autowired
-    private BCryptPasswordEncoder passwordEncoder;
+    private PasswordEncoder passwordEncoder;
 
-    public AuthResponse registerNewUser(RegisterRequest dto){
-        if (repo.findByEmail(dto.getEmail()).isPresent()){
+    @Autowired
+    private JwtService jwtService;
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
+    public AuthResponse registerNewUser(RegisterRequest dto) {
+
+        if (repo.findByEmail(dto.getEmail()).isPresent()) {
             throw new EmailAlreadyExistsException("Email already registered");
-
         }
+
         User entity = modelMapper.map(dto, User.class);
-        entity.setPassword(
-                passwordEncoder.encode(dto.getPassword())
-        );
+
+        entity.setPassword(passwordEncoder.encode(dto.getPassword()));
+
         repo.save(entity);
+
         return new AuthResponse(
                 "User Registered Successfully",
                 null,
@@ -41,23 +52,24 @@ public class AuthService {
                 entity.getRole()
         );
     }
+
     public AuthResponse login(LoginRequest request) {
 
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
+        );
         User user = repo.findByEmail(request.getEmail())
                 .orElseThrow(() ->
                         new InvalidCredentialsException("Invalid email or password"));
 
-        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new InvalidCredentialsException("Invalid email or password");
-        }
+        String token = jwtService.generateToken(user.getEmail());
 
         return new AuthResponse(
                 "Login Successful",
-                null,
+                token,
                 user.getName(),
                 user.getEmail(),
                 user.getRole()
         );
     }
-    }
-
+}
