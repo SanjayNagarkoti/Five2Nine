@@ -24,4 +24,5 @@ public interface ServiceService {
             Long serviceId,
             Authentication authentication
     );
+    ServiceResponse getServiceById(Long serviceId);
 }

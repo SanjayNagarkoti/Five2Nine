@@ -61,5 +61,10 @@ public class ServiceController {
                 serviceId,
                 authentication);
     }
-
+    @GetMapping("/{serviceId}")
+    public ServiceResponse getServiceById(
+            @PathVariable long serviceId
+    ){
+        return serviceService.getServiceById(serviceId);
+    }
 }

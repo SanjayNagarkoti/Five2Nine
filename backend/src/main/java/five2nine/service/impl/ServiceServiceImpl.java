@@ -112,4 +112,11 @@ public class ServiceServiceImpl implements ServiceService {
 
         return deleteServiceResponse ;
     }
+    @Override
+    public ServiceResponse getServiceById(Long serviceId){
+        Service service= serviceRepository.findById(serviceId)
+        .orElseThrow(() ->
+                new ServiceNotFoundException("Service not found"));
+        return mapToResponse(service);
+    }
 }
