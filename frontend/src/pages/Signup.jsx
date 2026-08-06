@@ -105,10 +105,10 @@ catch (error) {
               className="w-8 h-8 rounded-sm flex items-center justify-center transition-colors duration-500"
               style={{ backgroundColor: accent }}
             >
-              <span className="text-[#1B2140] font-bold text-sm">W</span>
+              <span className="text-[#1B2140] font-bold text-sm">F2N</span>
             </div>
             <span className="text-lg tracking-tight" style={{ fontFamily: "'Fraunces', serif" }}>
-              Wharf
+              Five2Nine
             </span>
           </div>
         </div>

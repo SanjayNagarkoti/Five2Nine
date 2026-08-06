@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Eye, EyeOff, Hammer, Search, ArrowRight, Check } from "lucide-react";
-import { authenticateUser } from "../service/authService";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { authenticateUser, testApi } from "../service/authService";
 export default function Loginpage() {
   const [showPassword, setShowPassword] = useState(false);
   const [userError, setuserError] = useState("");
@@ -9,6 +9,7 @@ export default function Loginpage() {
     email: "",
     password: "",
   });
+  const navigate = useNavigate();
 
   const accent = "#1F8A70";
 
@@ -29,8 +30,26 @@ export default function Loginpage() {
 
     try {
       const response = await authenticateUser(loginDto);
+localStorage.setItem("token", response.token);
 
-      console.log(response);
+localStorage.setItem(
+    "user",
+    JSON.stringify({
+        name: response.name,
+        email: response.email,
+        role: response.role,
+    })
+);
+      localStorage.setItem(
+        "user",
+        JSON.stringify({
+          name: response.name,
+          email: response.email,
+          role: response.role,
+        }),
+      );
+      console.log("Token Saved");
+      navigate("/dashboard");
     } catch (error) {
       if (error.response) {
         e.preventDefault();

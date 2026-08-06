@@ -4,6 +4,7 @@ import five2nine.security.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -40,8 +41,18 @@ public class SecurityConfig {
                         UsernamePasswordAuthenticationFilter.class
                 )
                 .authorizeHttpRequests(auth -> auth
+
                         .requestMatchers("/api/auth/**").permitAll()
-                        .anyRequest().authenticated()
+
+                        .requestMatchers("/api/services/my")
+                        .authenticated()
+
+                        .requestMatchers(HttpMethod.GET,
+                                "/api/services/**")
+                        .permitAll()
+
+                        .anyRequest()
+                        .authenticated()
                 )
 
                 .formLogin(form -> form.disable())
