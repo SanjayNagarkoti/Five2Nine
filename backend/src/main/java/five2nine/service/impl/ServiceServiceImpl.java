@@ -2,6 +2,7 @@ package five2nine.service.impl;
 
 import five2nine.dto.CreateServiceRequest;
 import five2nine.dto.DeleteServiceResponse;
+import five2nine.dto.ServiceFilterRequest;
 import five2nine.dto.ServiceResponse;
 import five2nine.entity.Service;
 import five2nine.entity.User;
@@ -9,7 +10,10 @@ import five2nine.exception.ServiceNotFoundException;
 import five2nine.exception.UnauthorizedServiceException;
 import five2nine.repository.ServiceRepository;
 import five2nine.service.ServiceService;
+import five2nine.specification.ServiceSpecification;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import java.util.List;
 
@@ -118,5 +122,27 @@ public class ServiceServiceImpl implements ServiceService {
         .orElseThrow(() ->
                 new ServiceNotFoundException("Service not found"));
         return mapToResponse(service);
+    }
+
+    @Override
+    public Page<ServiceResponse> getServices(
+            ServiceFilterRequest filter,
+            Pageable pageable) {
+
+        if (filter.getMinPrice() != null
+                && filter.getMaxPrice() != null
+                && filter.getMinPrice() > filter.getMaxPrice()) {
+
+            throw new IllegalArgumentException(
+                    "Minimum price cannot be greater than maximum price."
+            );
+        }
+
+        Page<Service> services = serviceRepository.findAll(
+                ServiceSpecification.filterServices(filter),
+                pageable
+        );
+
+        return services.map(this::mapToResponse);
     }
 }

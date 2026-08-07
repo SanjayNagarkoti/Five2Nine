@@ -2,6 +2,7 @@ package five2nine.service;
 
 import five2nine.dto.AuthResponse;
 import five2nine.dto.LoginRequest;
+import five2nine.dto.PasswordChangeResponse;
 import five2nine.dto.RegisterRequest;
 import five2nine.entity.User;
 import five2nine.exception.EmailAlreadyExistsException;
@@ -71,5 +72,11 @@ public class AuthService {
                 user.getEmail(),
                 user.getRole()
         );
+
     }
+    public PasswordChangeResponse changePassword(){
+//        User user= userRepository
+        return null;
+    }
+
 }

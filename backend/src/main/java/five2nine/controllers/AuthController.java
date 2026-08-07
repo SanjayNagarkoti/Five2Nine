@@ -2,6 +2,7 @@ package five2nine.controllers;
 
 import five2nine.dto.AuthResponse;
 import five2nine.dto.LoginRequest;
+import five2nine.dto.PasswordChangeResponse;
 import five2nine.dto.RegisterRequest;
 import five2nine.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,8 @@ public class AuthController
         return ResponseEntity.ok(auth);
 
     }
+//    @PostMapping("/password-change-request")
+//    public ResponseEntity<PasswordChangeResponse>
 
 
 

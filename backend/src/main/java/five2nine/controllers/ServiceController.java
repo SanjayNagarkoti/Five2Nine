@@ -2,10 +2,13 @@ package five2nine.controllers;
 
 import five2nine.dto.CreateServiceRequest;
 import five2nine.dto.DeleteServiceResponse;
+import five2nine.dto.ServiceFilterRequest;
 import five2nine.dto.ServiceResponse;
 import five2nine.service.ServiceService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,12 +29,6 @@ public class ServiceController {
             Authentication authentication) {
 
         return serviceService.createService(request, authentication);
-    }
-    @GetMapping
-    public List<ServiceResponse> getAllServices(){
-
-        return serviceService.getAllServices();
-
     }
     @GetMapping("/my")
     public List<ServiceResponse> getMyServices(
@@ -66,5 +63,12 @@ public class ServiceController {
             @PathVariable long serviceId
     ){
         return serviceService.getServiceById(serviceId);
+    }
+    @GetMapping
+    public Page<ServiceResponse> getServices(
+            @Valid ServiceFilterRequest filter,
+            Pageable pageable) {
+
+        return serviceService.getServices(filter, pageable);
     }
 }
