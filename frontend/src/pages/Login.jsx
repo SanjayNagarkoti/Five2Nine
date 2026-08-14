@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Eye, EyeOff, Hammer, Search, ArrowRight, Check } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
-import { authenticateUser, testApi } from "../service/authService";
+import { authenticateUser} from "../service/authService";
 export default function Loginpage() {
   const [showPassword, setShowPassword] = useState(false);
   const [userError, setuserError] = useState("");

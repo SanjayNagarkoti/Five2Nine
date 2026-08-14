@@ -9,6 +9,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -67,8 +68,8 @@ public class ServiceController {
     @GetMapping
     public Page<ServiceResponse> getServices(
             @Valid ServiceFilterRequest filter,
-            Pageable pageable) {
+            @PageableDefault(size = 10) Pageable pageable) {
 
         return serviceService.getServices(filter, pageable);
     }
-}
+}   

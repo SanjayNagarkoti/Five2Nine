@@ -1,4 +1,4 @@
-import { testApi } from "../service/authService";
+
 import { useEffect, useState } from "react";
 import { getCurrentUser } from "../service/userService";
 import { Navigate } from "react-router-dom";

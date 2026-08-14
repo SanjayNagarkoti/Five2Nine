@@ -70,4 +70,12 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.BAD_REQUEST)
                 .body(message);
     }
+    @ExceptionHandler(InvalidResetTokenException.class)
+    public ResponseEntity<String> handleInvalidResetToken(
+            InvalidResetTokenException ex) {
+
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(ex.getMessage());
+    }
 }
