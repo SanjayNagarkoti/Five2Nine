@@ -1,13 +1,22 @@
 import { useState } from "react";
-import { ArrowRight, Check, AlertCircle, Eye, EyeOff } from "lucide-react";
-import { Link, useSearchParams } from "react-router-dom";
-import { resetPassword } from "../service/authService";
+import {
+  ArrowRight,
+  Check,
+  AlertCircle,
+  Eye,
+  EyeOff,
+} from "lucide-react";
+import {
+  Link,
+  useSearchParams,
+} from "react-router-dom";
+import {
+  resetPassword,
+} from "../service/authService";
 
 export default function ResetPassword() {
   const [searchParams] = useSearchParams();
 
-  // Get token from:
-  // /reset-password?token=abc123
   const token = searchParams.get("token");
 
   const [form, setForm] = useState({
@@ -15,8 +24,11 @@ export default function ResetPassword() {
     confirmPassword: "",
   });
 
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [showPassword, setShowPassword] =
+    useState(false);
+
+  const [showConfirmPassword, setShowConfirmPassword] =
+    useState(false);
 
   const [status, setStatus] = useState("form");
   const [message, setMessage] = useState("");
@@ -39,12 +51,6 @@ export default function ResetPassword() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    setMessage("");
-
-    // ----------------------------------------
-    // Check token
-    // ----------------------------------------
-
     if (!token) {
       setStatus("error");
       setMessage(
@@ -53,387 +59,339 @@ export default function ResetPassword() {
       return;
     }
 
-    // ----------------------------------------
-    // Check passwords
-    // ----------------------------------------
-
-    if (form.newPassword !== form.confirmPassword) {
+    if (form.newPassword.length < 8) {
       setStatus("error");
-      setMessage("Passwords do not match.");
+      setMessage(
+        "Password must contain at least 8 characters."
+      );
       return;
     }
 
-    // ----------------------------------------
-    // Basic password validation
-    // ----------------------------------------
-
-    if (form.newPassword.length < 8) {
+    if (
+      form.newPassword !==
+      form.confirmPassword
+    ) {
       setStatus("error");
-      setMessage("Password must contain at least 8 characters.");
+      setMessage("Passwords do not match.");
       return;
     }
 
     setLoading(true);
 
     try {
-      const resetData = {
-        token: token,
+      await resetPassword({
+        token,
         newPassword: form.newPassword,
-      };
-
-      console.log("Reset password request:", {
-        ...resetData,
-        token: "[HIDDEN]",
       });
 
-      const response = await resetPassword(resetData);
-
-      console.log("Reset password response:", response);
-
       setStatus("success");
-
     } catch (error) {
-      console.error("Reset password error:", error);
+      console.error(
+        "Reset password error:",
+        error
+      );
 
-      let errorMessage =
-        "Unable to reset your password. Please try again.";
-
-      if (error.response) {
-        if (typeof error.response.data === "string") {
-          errorMessage = error.response.data;
-        } else if (error.response.data?.message) {
-          errorMessage = error.response.data.message;
-        } else if (error.response.status === 400) {
-          errorMessage =
+      const errorMessage =
+        typeof error.response?.data === "string"
+          ? error.response.data
+          : error.response?.data?.message ||
             "The reset link is invalid or has expired.";
-        }
-      } else {
-        errorMessage =
-          "Unable to connect to the server. Please try again later.";
-      }
 
       setMessage(errorMessage);
       setStatus("error");
-
     } finally {
       setLoading(false);
     }
   };
 
-  // =====================================================
-  // SUCCESS SCREEN
-  // =====================================================
-
   if (status === "success") {
     return (
-      <div
-        className="min-h-screen w-full flex justify-center bg-[#E9E5DA]"
-        style={{ fontFamily: "'Inter', sans-serif" }}
-      >
-        <style>{`
-          @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600;700&display=swap');
-        `}</style>
-
-        <div className="w-full max-w-[1360px] min-h-screen flex bg-[#FAF8F3] lg:shadow-[0_0_80px_rgba(27,33,64,0.12)]">
-
-          <div className="flex-1 flex items-center justify-center px-6 py-10 sm:px-10">
-
-            <div className="w-full max-w-[420px]">
-
-              {/* SUCCESS ICON */}
-
-              <div className="w-14 h-14 rounded-full bg-[#E4F3EE] flex items-center justify-center mb-7">
-
-                <Check
-                  size={28}
-                  strokeWidth={2.5}
-                  className="text-[#1F8A70]"
-                />
-
-              </div>
-
-              {/* TITLE */}
-
-              <h2
-                className="text-[1.75rem] text-[#1B2140] mb-2"
-                style={{
-                  fontFamily: "'Fraunces', serif",
-                  fontWeight: 500,
-                }}
-              >
-                Password changed.
-              </h2>
-
-              {/* MESSAGE */}
-
-              <p className="text-[#8288A8] text-[15px] leading-6 mb-8">
-                Your password has been successfully reset.
-                You can now log in using your new password.
-              </p>
-
-              {/* LOGIN */}
-
-              <Link
-                to="/login"
-                className="inline-flex items-center text-[#1F8A70] font-medium text-[14.5px] underline underline-offset-4 decoration-[#A8D8CC]"
-              >
-                Back to Login
-              </Link>
-
-            </div>
-
-          </div>
-
+      <AuthShell>
+        <div className="w-14 h-14 rounded-full bg-[#E4F3EE] flex items-center justify-center">
+          <Check
+            size={28}
+            className="text-[#1F8A70]"
+          />
         </div>
-      </div>
+
+        <h2
+          className="text-3xl text-[#1B2140] mt-7"
+          style={{
+            fontFamily: "'Fraunces', serif",
+          }}
+        >
+          Password changed
+        </h2>
+
+        <p className="text-[#8288A8] text-sm leading-6 mt-3">
+          Your password has been successfully reset.
+          You can now sign in with your new password.
+        </p>
+
+        <Link
+          to="/login"
+          className="inline-flex items-center gap-2 mt-8 text-sm font-medium text-[#1F8A70] underline"
+        >
+          Back to login
+          <ArrowRight size={15} />
+        </Link>
+      </AuthShell>
     );
   }
-
-  // =====================================================
-  // ERROR SCREEN
-  // =====================================================
 
   if (status === "error") {
     return (
-      <div
-        className="min-h-screen w-full flex justify-center bg-[#E9E5DA]"
-        style={{ fontFamily: "'Inter', sans-serif" }}
-      >
-        <style>{`
-          @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600;700&display=swap');
-        `}</style>
-
-        <div className="w-full max-w-[1360px] min-h-screen flex bg-[#FAF8F3] lg:shadow-[0_0_80px_rgba(27,33,64,0.12)]">
-
-          <div className="flex-1 flex items-center justify-center px-6 py-10 sm:px-10">
-
-            <div className="w-full max-w-[420px]">
-
-              {/* ERROR ICON */}
-
-              <div className="w-14 h-14 rounded-full bg-red-50 flex items-center justify-center mb-7">
-
-                <AlertCircle
-                  size={28}
-                  strokeWidth={2}
-                  className="text-red-500"
-                />
-
-              </div>
-
-              {/* TITLE */}
-
-              <h2
-                className="text-[1.75rem] text-[#1B2140] mb-2"
-                style={{
-                  fontFamily: "'Fraunces', serif",
-                  fontWeight: 500,
-                }}
-              >
-                Reset link invalid.
-              </h2>
-
-              {/* MESSAGE */}
-
-              <p className="text-[#8288A8] text-[15px] leading-6 mb-8">
-                {message}
-              </p>
-
-              <div className="flex items-center gap-6">
-
-                <button
-                  onClick={() => {
-                    setStatus("form");
-                    setMessage("");
-                  }}
-                  className="text-[#1F8A70] font-medium text-[14.5px] underline underline-offset-4 decoration-[#A8D8CC]"
-                >
-                  Try Again
-                </button>
-
-                <Link
-                  to="/login"
-                  className="text-[#1F8A70] font-medium text-[14.5px] underline underline-offset-4 decoration-[#A8D8CC]"
-                >
-                  Back to Login
-                </Link>
-
-              </div>
-
-            </div>
-
-          </div>
-
+      <AuthShell>
+        <div className="w-14 h-14 rounded-full bg-red-50 flex items-center justify-center">
+          <AlertCircle
+            size={28}
+            className="text-red-500"
+          />
         </div>
-      </div>
+
+        <h2
+          className="text-3xl text-[#1B2140] mt-7"
+          style={{
+            fontFamily: "'Fraunces', serif",
+          }}
+        >
+          Reset link unavailable
+        </h2>
+
+        <p className="text-[#8288A8] text-sm leading-6 mt-3">
+          {message}
+        </p>
+
+        <div className="flex gap-5 mt-8">
+          <button
+            onClick={() => {
+              setStatus("form");
+              setMessage("");
+            }}
+            className="text-sm text-[#1F8A70] underline"
+          >
+            Try again
+          </button>
+
+          <Link
+            to="/login"
+            className="text-sm text-[#1F8A70] underline"
+          >
+            Back to login
+          </Link>
+        </div>
+      </AuthShell>
     );
   }
 
-  // =====================================================
-  // RESET PASSWORD FORM
-  // =====================================================
-
   return (
-    <div
-      className="min-h-screen w-full flex justify-center bg-[#E9E5DA]"
-      style={{ fontFamily: "'Inter', sans-serif" }}
-    >
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600&family=Inter:wght@400;500;600;700&display=swap');
-      `}</style>
+    <AuthShell>
+      <h2
+        className="text-3xl text-[#1B2140]"
+        style={{
+          fontFamily: "'Fraunces', serif",
+        }}
+      >
+        Create a new password
+      </h2>
 
-      <div className="w-full max-w-[1360px] min-h-screen flex bg-[#FAF8F3] lg:shadow-[0_0_80px_rgba(27,33,64,0.12)]">
+      <p className="text-sm text-[#8288A8] mt-2">
+        Choose a new password for your account.
+      </p>
 
-        <div className="flex-1 flex items-center justify-center px-6 py-10 sm:px-10">
+      <form
+        onSubmit={handleSubmit}
+        className="space-y-4 mt-8"
+      >
+        <div>
+          <label className="block text-xs font-semibold uppercase tracking-wide text-[#8288A8] mb-2">
+            New password
+          </label>
 
-          <div className="w-full max-w-[420px]">
+          <div className="relative">
+            <input
+              type={
+                showPassword
+                  ? "text"
+                  : "password"
+              }
+              required
+              value={form.newPassword}
+              onChange={handleChange(
+                "newPassword"
+              )}
+              placeholder="At least 8 characters"
+              disabled={loading}
+              className="w-full rounded-lg border border-[#E7E5DD] bg-white px-4 py-3 pr-11 text-sm outline-none focus:border-[#1F8A70] disabled:opacity-60"
+            />
 
-            {/* TITLE */}
-
-            <h2
-              className="text-[1.75rem] text-[#1B2140] mb-1.5"
-              style={{
-                fontFamily: "'Fraunces', serif",
-                fontWeight: 500,
-              }}
+            <button
+              type="button"
+              onClick={() =>
+                setShowPassword(
+                  (previous) => !previous
+                )
+              }
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-[#8288A8]"
             >
-              Create a new password
-            </h2>
-
-            {/* DESCRIPTION */}
-
-            <p className="text-[#8288A8] text-sm mb-7">
-              Enter a new password for your account.
-            </p>
-
-            <form
-              onSubmit={handleSubmit}
-              className="space-y-4"
-            >
-
-              {/* NEW PASSWORD */}
-
-              <div>
-
-                <label className="block text-xs font-medium text-[#8288A8] uppercase tracking-wide mb-1.5">
-                  New Password
-                </label>
-
-                <div className="relative">
-
-                  <input
-                    type={showPassword ? "text" : "password"}
-                    required
-                    value={form.newPassword}
-                    onChange={handleChange("newPassword")}
-                    placeholder="Enter your new password"
-                    disabled={loading}
-                    className="w-full rounded-lg border border-[#E7E5DD] bg-white px-3.5 py-2.5 pr-11 text-[14.5px] text-[#1B2140] placeholder-[#B4B7C6] outline-none transition-colors focus:border-[#1F8A70] disabled:opacity-60"
-                  />
-
-                  <button
-                    type="button"
-                    onClick={() =>
-                      setShowPassword((previous) => !previous)
-                    }
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[#8288A8]"
-                  >
-                    {showPassword ? (
-                      <EyeOff size={18} />
-                    ) : (
-                      <Eye size={18} />
-                    )}
-                  </button>
-
-                </div>
-
-              </div>
-
-              {/* CONFIRM PASSWORD */}
-
-              <div>
-
-                <label className="block text-xs font-medium text-[#8288A8] uppercase tracking-wide mb-1.5">
-                  Confirm Password
-                </label>
-
-                <div className="relative">
-
-                  <input
-                    type={showConfirmPassword ? "text" : "password"}
-                    required
-                    value={form.confirmPassword}
-                    onChange={handleChange("confirmPassword")}
-                    placeholder="Confirm your new password"
-                    disabled={loading}
-                    className="w-full rounded-lg border border-[#E7E5DD] bg-white px-3.5 py-2.5 pr-11 text-[14.5px] text-[#1B2140] placeholder-[#B4B7C6] outline-none transition-colors focus:border-[#1F8A70] disabled:opacity-60"
-                  />
-
-                  <button
-                    type="button"
-                    onClick={() =>
-                      setShowConfirmPassword((previous) => !previous)
-                    }
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[#8288A8]"
-                  >
-                    {showConfirmPassword ? (
-                      <EyeOff size={18} />
-                    ) : (
-                      <Eye size={18} />
-                    )}
-                  </button>
-
-                </div>
-
-              </div>
-
-              {/* PASSWORD REQUIREMENT */}
-
-              <p className="text-[#8288A8] text-xs">
-                Password must contain at least 8 characters.
-              </p>
-
-              {/* SUBMIT */}
-
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full mt-2 rounded-lg py-3 text-[14.5px] font-semibold text-white flex items-center justify-center gap-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-                style={{
-                  backgroundColor: accent,
-                }}
-              >
-
-                {loading ? (
-                  "Resetting..."
-                ) : (
-                  <>
-                    Reset Password
-                    <ArrowRight size={16} />
-                  </>
-                )}
-
-              </button>
-
-            </form>
-
-            {/* BACK TO LOGIN */}
-
-            <p className="text-[#8288A8] text-sm mt-6">
-              Remember your password?{" "}
-              <Link
-                to="/login"
-                className="text-[#1F8A70] font-medium underline underline-offset-2"
-              >
-                Back to Login
-              </Link>
-            </p>
-
+              {showPassword ? (
+                <EyeOff size={17} />
+              ) : (
+                <Eye size={17} />
+              )}
+            </button>
           </div>
-
         </div>
 
+        <div>
+          <label className="block text-xs font-semibold uppercase tracking-wide text-[#8288A8] mb-2">
+            Confirm password
+          </label>
+
+          <div className="relative">
+            <input
+              type={
+                showConfirmPassword
+                  ? "text"
+                  : "password"
+              }
+              required
+              value={form.confirmPassword}
+              onChange={handleChange(
+                "confirmPassword"
+              )}
+              placeholder="Confirm your new password"
+              disabled={loading}
+              className="w-full rounded-lg border border-[#E7E5DD] bg-white px-4 py-3 pr-11 text-sm outline-none focus:border-[#1F8A70] disabled:opacity-60"
+            />
+
+            <button
+              type="button"
+              onClick={() =>
+                setShowConfirmPassword(
+                  (previous) => !previous
+                )
+              }
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-[#8288A8]"
+            >
+              {showConfirmPassword ? (
+                <EyeOff size={17} />
+              ) : (
+                <Eye size={17} />
+              )}
+            </button>
+          </div>
+        </div>
+
+        <p className="text-xs text-[#8288A8]">
+          Password must contain at least 8 characters.
+        </p>
+
+        <button
+          type="submit"
+          disabled={loading}
+          className="w-full rounded-lg py-3 text-sm font-semibold text-white flex items-center justify-center gap-2 disabled:opacity-50"
+          style={{
+            backgroundColor: accent,
+          }}
+        >
+          {loading
+            ? "Updating password..."
+            : "Reset password"}
+
+          {!loading && (
+            <ArrowRight size={16} />
+          )}
+        </button>
+      </form>
+
+      <p className="text-sm text-[#8288A8] mt-6">
+        Remember your password?{" "}
+        <Link
+          to="/login"
+          className="text-[#1F8A70] font-medium underline"
+        >
+          Back to login
+        </Link>
+      </p>
+    </AuthShell>
+  );
+}
+
+function AuthShell({ children }) {
+  return (
+    <div className="min-h-screen bg-[#E9E5DA] flex items-center justify-center px-4 py-6">
+      <div className="w-full max-w-[1100px] min-h-[620px] grid lg:grid-cols-[0.8fr_1fr] bg-[#FAF8F3] rounded-2xl overflow-hidden shadow-[0_20px_60px_rgba(27,33,64,0.12)]">
+
+        <div className="hidden lg:flex bg-[#1B2140] text-white p-12 flex-col justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-lg bg-[#1F8A70] flex items-center justify-center font-bold text-sm">
+              F2N
+            </div>
+
+            <span
+              className="text-xl"
+              style={{
+                fontFamily: "'Fraunces', serif",
+              }}
+            >
+              Five2Nine
+            </span>
+          </div>
+
+          <div>
+            <p className="uppercase text-xs tracking-[0.2em] text-[#1F8A70] mb-4">
+              Account security
+            </p>
+
+            <h1
+              className="text-5xl leading-tight"
+              style={{
+                fontFamily: "'Fraunces', serif",
+              }}
+            >
+              A fresh start,
+              <br />
+              securely.
+            </h1>
+
+            <p className="text-[#B8BCD4] mt-6 leading-7 max-w-sm">
+              Update your password and get back to
+              Five2Nine.
+            </p>
+          </div>
+
+          <p className="text-[#7C81A6] text-sm">
+            Five2Nine
+          </p>
+        </div>
+
+        <div className="flex items-center justify-center px-6 sm:px-12 py-12">
+          <div className="w-full max-w-[420px]">
+
+            <div className="lg:hidden flex items-center gap-3 mb-10">
+              <div className="w-8 h-8 rounded-lg bg-[#1F8A70] flex items-center justify-center font-bold text-xs text-white">
+                F2N
+              </div>
+
+              <span
+                className="text-lg text-[#1B2140]"
+                style={{
+                  fontFamily: "'Fraunces', serif",
+                }}
+              >
+                Five2Nine
+              </span>
+            </div>
+
+            {children}
+          </div>
+        </div>
       </div>
+
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500&family=Inter:wght@400;500;600;700&display=swap');
+      `}</style>
     </div>
   );
 }

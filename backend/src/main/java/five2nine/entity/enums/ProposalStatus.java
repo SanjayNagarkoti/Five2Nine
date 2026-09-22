@@ -1,9 +1,7 @@
 package five2nine.entity.enums;
 
 public enum ProposalStatus {
-    PENDING,
-    NEGOTIATING,
+    OPEN,
     ACCEPTED,
     REJECTED,
-    EXPIRED
 }

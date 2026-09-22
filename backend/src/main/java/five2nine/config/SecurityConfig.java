@@ -44,15 +44,14 @@ public class SecurityConfig {
 
                         .requestMatchers("/api/auth/**").permitAll()
 
-                        .requestMatchers("/api/services/my")
-                        .authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/services/**").permitAll()
+                        .requestMatchers("/api/services/my").authenticated()
 
-                        .requestMatchers(HttpMethod.GET,
-                                "/api/services/**")
-                        .permitAll()
-
-                        .anyRequest()
-                        .authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/projects/**").permitAll()
+                        .requestMatchers("/api/projects/**").authenticated()
+                        .requestMatchers("/api/proposals/**").authenticated()
+                        .requestMatchers("/api/orders/**").authenticated()
+                        .anyRequest().authenticated()
                 )
 
                 .formLogin(form -> form.disable())

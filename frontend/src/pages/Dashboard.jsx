@@ -1,59 +1,85 @@
-
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { getCurrentUser } from "../service/userService";
-import { Navigate } from "react-router-dom";
+import AppNav from "../components/AppNav";
+
 export default function Dashboard() {
   const [user, setUser] = useState(null);
-  const [message, setMessage] = useState("");
-  
-useEffect(() => {
 
-    const loadProfile = async () => {
-
-        try {
-
-            const data = await getCurrentUser();
-
-            setUser(data);
-
-        } catch (error) {
-
-            console.log(error);
-
-        }
-
+  useEffect(() => {
+    const loadUser = async () => {
+      try {
+        const data = await getCurrentUser();
+        setUser(data);
+      } catch (error) {
+        console.error(error);
+      }
     };
 
-    loadProfile();
+    loadUser();
+  }, []);
 
-}, []);
-const handleLogout = async (e) => {
-  e.preventDefault();
-    console.log("Inside HandleLogout")
-localStorage.removeItem('token');
-localStorage.removeItem('user');
-window.location.href="/"
-}
+  const isClient = user?.role === "CLIENT";
+
   return (
-    <div>
-      <h1 className="text-3xl font-bold">
+    <div className="min-h-screen bg-[#F7F5EF]">
+      <AppNav />
 
-    Welcome back,
+      <div className="max-w-7xl mx-auto px-6 py-10">
+        <h1 className="text-3xl font-bold text-[#1B2140]">
+          Welcome back, {user?.name} 👋
+        </h1>
 
-    {user?.name} 👋
+        <p className="text-gray-500 mt-2">
+          Role: {user?.role}
+        </p>
 
-</h1>
-<p>
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-5 mt-10">
+          <Link
+            to="/services"
+            className="bg-white border rounded-xl p-6 hover:shadow-md"
+          >
+            <h2 className="font-semibold text-lg">Services</h2>
+            <p className="text-sm text-gray-500 mt-2">
+              {isClient
+                ? "Browse freelancer services"
+                : "Create and manage your services"}
+            </p>
+          </Link>
 
-    Role : {user?.role}
+          <Link
+            to="/projects"
+            className="bg-white border rounded-xl p-6 hover:shadow-md"
+          >
+            <h2 className="font-semibold text-lg">Projects</h2>
+            <p className="text-sm text-gray-500 mt-2">
+              {isClient
+                ? "Post your project requirements"
+                : "Find projects to work on"}
+            </p>
+          </Link>
 
-</p>
-<button
-onClick={handleLogout}
-className="flex items-center bg-red-600 gap-2 px-4 py-2 tex-sm font-bold text-white rounded-lg hover:bg-red-400 hover:text-gray-900 transition-colors duration-200  ">
-  LogOut
-</button>
+          <Link
+            to="/proposals"
+            className="bg-white border rounded-xl p-6 hover:shadow-md"
+          >
+            <h2 className="font-semibold text-lg">Proposals</h2>
+            <p className="text-sm text-gray-500 mt-2">
+              Manage negotiation and proposals
+            </p>
+          </Link>
+
+          <Link
+            to="/orders"
+            className="bg-white border rounded-xl p-6 hover:shadow-md"
+          >
+            <h2 className="font-semibold text-lg">Orders</h2>
+            <p className="text-sm text-gray-500 mt-2">
+              View your accepted orders
+            </p>
+          </Link>
+        </div>
+      </div>
     </div>
-  
   );
 }
