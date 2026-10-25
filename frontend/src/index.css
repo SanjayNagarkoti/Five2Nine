@@ -1,0 +1,20 @@
+@import "tailwindcss";
+
+/* Hide Edge/IE password reveal button */
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear {
+    display: none;
+}
+
+/* Hide the reveal icon in newer Chromium Edge */
+input::-webkit-credentials-auto-fill-button,
+input::-webkit-password-toggle-button {
+    display: none !important;
+}
+.input {
+  @apply w-full rounded-lg border border-gray-200 bg-white px-3 py-2.5 outline-none focus:border-[#1F8A70];
+}
+
+.btn {
+  @apply rounded-lg bg-[#1F8A70] px-5 py-2.5 font-semibold text-white hover:opacity-90;
+}

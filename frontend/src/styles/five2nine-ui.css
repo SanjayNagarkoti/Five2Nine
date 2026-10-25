@@ -1,0 +1,69 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&display=swap');
+
+:root {
+  font-family: 'DM Sans', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  color: #1b332d;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.font-display {
+  font-family: 'Fraunces', Georgia, serif;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 90px;
+}
+
+.f2n-auth-bg {
+  background:
+    radial-gradient(circle at 12% 12%, rgba(208, 237, 220, 0.65), transparent 30rem),
+    radial-gradient(circle at 88% 82%, rgba(222, 226, 249, 0.58), transparent 31rem),
+    #f6f8f4;
+}
+
+.f2n-fade-up {
+  animation: f2n-fade-up 600ms cubic-bezier(0.2, 0.75, 0.25, 1) both;
+}
+
+.f2n-float {
+  animation: f2n-float 6.5s ease-in-out infinite;
+}
+
+.f2n-float-slow {
+  animation: f2n-float 7.8s ease-in-out infinite reverse;
+  animation-delay: -1.8s;
+}
+
+.f2n-tilt {
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .f2n-tilt:hover {
+    transform: perspective(1000px) rotateX(1.5deg) rotateY(-1.5deg) translateY(-3px);
+  }
+}
+
+@keyframes f2n-fade-up {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes f2n-float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-9px) rotate(-0.5deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}

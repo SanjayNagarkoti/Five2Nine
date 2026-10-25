@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="88" viewBox="0 0 440 88" fill="none" role="img" aria-labelledby="title desc">
+  <title id="title">Five2Nine</title>
+  <desc id="desc">Five2Nine logo for dark backgrounds.</desc>
+  <defs>
+    <linearGradient id="mark" x1="8" y1="5" x2="72" y2="80" gradientUnits="userSpaceOnUse"><stop stop-color="#238D74"/><stop offset="1" stop-color="#173D33"/></linearGradient>
+    <linearGradient id="accent" x1="20" y1="7" x2="63" y2="19" gradientUnits="userSpaceOnUse"><stop stop-color="#D8E8D9"/><stop offset="1" stop-color="#8AB7A0"/></linearGradient>
+  </defs>
+  <g id="monogram"><rect x="4" y="4" width="80" height="80" rx="23" fill="url(#mark)"/><path d="M23 20H62" stroke="url(#accent)" stroke-width="3.5" stroke-linecap="round"/><text x="44" y="55" fill="#F7F8F4" font-family="Inter, Arial, sans-serif" font-size="27" font-weight="750" letter-spacing="-2.3" text-anchor="middle">F2N</text><path d="M27 66C36 73 51 73 61 65" stroke="#A9D5BE" stroke-opacity=".9" stroke-width="2.2" stroke-linecap="round"/></g>
+  <g id="wordmark"><text x="102" y="48" fill="#F7F8F4" font-family="Fraunces, Georgia, serif" font-size="39" font-weight="600" letter-spacing="-1.55">Five</text><text x="190" y="48" fill="#9CCCB5" font-family="Fraunces, Georgia, serif" font-size="39" font-weight="600" letter-spacing="-1.55">2</text><text x="211" y="48" fill="#F7F8F4" font-family="Fraunces, Georgia, serif" font-size="39" font-weight="600" letter-spacing="-1.55">Nine</text><text x="104" y="69" fill="#C0D0C8" font-family="Inter, Arial, sans-serif" font-size="9.2" font-weight="600" letter-spacing="2.15">FREELANCE · HIRE · NEGOTIATE · WORK</text></g>
+</svg>

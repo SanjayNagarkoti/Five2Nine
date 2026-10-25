@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" fill="none" role="img" aria-labelledby="title">
+  <title id="title">Five2Nine icon</title>
+  <defs><linearGradient id="mark" x1="5" y1="3" x2="58" y2="63" gradientUnits="userSpaceOnUse"><stop stop-color="#238D74"/><stop offset="1" stop-color="#173D33"/></linearGradient><linearGradient id="accent" x1="13" y1="9" x2="50" y2="19" gradientUnits="userSpaceOnUse"><stop stop-color="#D8E8D9"/><stop offset="1" stop-color="#8AB7A0"/></linearGradient></defs>
+  <rect x="1" y="1" width="62" height="62" rx="18" fill="url(#mark)"/>
+  <path d="M16 15H48" stroke="url(#accent)" stroke-width="2.8" stroke-linecap="round"/>
+  <text x="32" y="42" fill="#F7F8F4" font-family="Inter, Arial, sans-serif" font-size="21" font-weight="750" letter-spacing="-1.8" text-anchor="middle">F2N</text>
+  <path d="M19 50C26 55 37 55 45 49" stroke="#A9D5BE" stroke-width="1.8" stroke-linecap="round"/>
+</svg>
